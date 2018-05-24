@@ -1,5 +1,6 @@
 {
   "swagger": "2.0",
+  "title": "Integration API Spec",
   "info": {
     "description": "This document describes the APIs to integrate with Inspectorio’s SaaS system",
     "title": "API INTEGRATION",
@@ -522,6 +523,50 @@
             "name": "offset",
             "required": false,
             "type": "integer"
+          },
+          {
+            "description": "Sorting data",
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "example": "created_date:desc|asc",
+            "type": "string"
+          },
+          {
+            "description": "Created time range (from) with UTC format",
+            "in": "query",
+            "name": "created_from",
+            "required": false,
+            "example": "2018-01-20T07:43:00Z",
+            "format": "date",
+            "type": "string"
+          },
+          {
+            "description": "Created time range (to) with UTC format",
+            "in": "query",
+            "name": "created_to",
+            "required": false,
+            "example": "2018-01-30T07:43:00Z",
+            "format": "date",
+            "type": "string"
+          },
+          {
+            "description": "Inspection time range (from) with UTC format",
+            "in": "query",
+            "name": "inspection_date_from",
+            "required": false,
+            "example": "2018-01-20T07:43:00Z",
+            "format": "date",
+            "type": "string"
+          },
+          {
+            "description": "Inspection time range (to) with UTC format",
+            "in": "query",
+            "name": "inspection_date_to",
+            "required": false,
+            "example": "2018-01-30T07:43:00Z",
+            "format": "date",
+            "type": "string"
           }
         ],
         "responses": {
@@ -1010,7 +1055,7 @@
               },
               "inspectionId": {
                 "type": "string",
-                "example": "db4b5cac-5df6-11e8-8ba4-a674cb2d4710"
+                "example": "inspection_id"
               },
               "item": {
                 "type": "string",
@@ -1039,7 +1084,7 @@
                     },
                     "source": {
                       "type": "string",
-                      "example": "https://s3.amazonaws.com/inspectorio-files-upload-production/organization_293414/images/mobile/64a54a80-3810-417b-b148-77c23a793b64.jpg"
+                      "example": "https://s3.amazonaws.com/image.jpg"
                     }
                   }
                 }
@@ -1096,7 +1141,7 @@
               },
               "docx_url": {
                 "type": "string",
-                "example": "https://s3.amazonaws.com/inspectorio-files-upload-production/organization_252437/documents/inspections/46672018-05-22SAE-ATEXPIAIIISADUPRO_5d806404-5e08-11e8-8321-965e7b5239155d82b632-5e08-11e8-8321-965e7b523915.docx"
+                "example": "https://s3.amazonaws.com/file.docx"
               },
               "factoryId": {
                 "type": "string",
@@ -1108,7 +1153,7 @@
               },
               "inspectionId": {
                 "type": "string",
-                "example": "db4b5cac-5df6-11e8-8ba4-a674cb2d4710"
+                "example": "inspection_id"
               },
               "inspectionInformation": {
                 "type": "object",
@@ -1123,7 +1168,7 @@
                   },
                   "bookingId": {
                     "type": "string",
-                    "example": "5bc94c28-ffd7-4da1-8151-92c0c69d6572"
+                    "example": "booking_id"
                   },
                   "brandRetailerInformation": {
                     "type": "object",
@@ -1134,7 +1179,7 @@
                       },
                       "organizationId": {
                         "type": "string",
-                        "example": "252437"
+                        "example": "org_id"
                       }
                     }
                   },
@@ -1148,7 +1193,7 @@
                   },
                   "confirmedBy": {
                     "type": "string",
-                    "example": "Lori Stoughton"
+                    "example": "Sample Name"
                   },
                   "createTime": {
                     "type": "integer",
@@ -1280,7 +1325,7 @@
                             },
                             "styleId": {
                               "type": "string",
-                              "example": "S3275_00548337"
+                              "example": "00548337"
                             },
                             "styleName": {
                               "type": "string",
@@ -1379,11 +1424,11 @@
                         "properties": {
                           "latitude": {
                             "type": "string",
-                            "example": "14.497520229792686"
+                            "example": "10.497520229792686"
                           },
                           "longitude": {
                             "type": "string",
-                            "example": "-90.5809641257772"
+                            "example": "-70.5809641257772"
                           }
                         }
                       }
@@ -1531,7 +1576,7 @@
                       },
                       "uuid": {
                         "type": "string",
-                        "example": "fd68961f-8330-4e95-96ea-4e43bcc01287"
+                        "example": "sample_uuid"
                       }
                     }
                   }
@@ -1576,7 +1621,7 @@
               },
               "pdf_url": {
                 "type": "string",
-                "example": "https://s3.amazonaws.com/inspectorio-files-upload-production/organization_252437/documents/inspections/46672018-05-22SAE-ATEXPIAIIISADUPRO_5ed3e0f6-5e08-11e8-8321-965e7b5239155ed4ff72-5e08-11e8-8321-965e7b523915.pdf"
+                "example": "https://s3.amazonaws.com/file.pdf"
               },
               "productCategories": {
                 "type": "string",
@@ -1703,7 +1748,70 @@
         },
         "inspectionPhotos": {
           "type": "array",
-          "items": {}
+          "items": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "example": "YELLOW SAMPLE & BULK COMPARISON PICTURE. "
+                  },
+                  "fileType": {
+                    "type": "string",
+                    "example": "jpg"
+                  },
+                  "rotateAngle": {
+                    "type": "string",
+                    "example": "0"
+                  },
+                  "source": {
+                    "type": "string",
+                    "example": "https://s3.amazonaws.com/file.jpg"
+                  }
+                }
+              },
+              "groupId": {
+                "type": "string",
+                "example": "group_id"
+              },
+              "inspectionId": {
+                "type": "string",
+                "default": "",
+                "example": "inspection_id"
+              },
+              "itemId": {
+                "type": "string",
+                "example": "item_id"
+              },
+              "label": {
+                "type": "string",
+                "default": "",
+                "example": "Back View"
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "org_id"
+              },
+              "photoId": {
+                "type": "string",
+                "example": "photo_id"
+              },
+              "status": {
+                "type": "string",
+                "example": "n/a"
+              },
+              "style": {
+                "type": "string",
+                "example": "ACK97 DOT"
+              },
+              "type": {
+                "type": "string",
+                "example": "production"
+              }
+            }
+          }
         },
         "inspectionQuestions": {
           "type": "array",
@@ -1831,7 +1939,7 @@
               },
               "inspectionId": {
                 "type": "string",
-                "example": "db4b5cac-5df6-11e8-8ba4-a674cb2d4710"
+                "example": "inspection_id"
               },
               "organizationId": {
                 "type": "string",
@@ -1839,7 +1947,7 @@
               },
               "resultId": {
                 "type": "string",
-                "example": "065310f6-6574-4088-99b4-3ceae6ef438a"
+                "example": "result_id"
               },
               "status": {
                 "type": "string",
@@ -1855,7 +1963,7 @@
             "properties": {
               "inspectionId": {
                 "type": "string",
-                "example": "db4b5cac-5df6-11e8-8ba4-a674cb2d4710"
+                "example": "inspection_id"
               },
               "organizationId": {
                 "type": "string",
@@ -1895,7 +2003,7 @@
               },
               "inspectionId": {
                 "type": "string",
-                "example": "db4b5cac-5df6-11e8-8ba4-a674cb2d4710"
+                "example": "inspection_id"
               },
               "item": {
                 "type": "string",
@@ -1911,7 +2019,7 @@
               },
               "sampleId": {
                 "type": "string",
-                "example": "00548337__solid__331-11-01510"
+                "example": "sample_id"
               },
               "samplePull": {
                 "type": "integer",
@@ -1930,7 +2038,51 @@
         },
         "inspectionSpecialAttentionPoint": {
           "type": "array",
-          "items": {}
+          "items": {
+            "type": "object",
+            "properties": {
+              "attentionId": {
+                "type": "string",
+                "example": "attention_id"
+              },
+              "description": {
+                "type": "string",
+                "example": "djkdkfncnfj"
+              },
+              "group": {
+                "type": "string",
+                "example": "group_id"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "org_id"
+              },
+              "pictures": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rotateAngle": {
+                      "type": "string",
+                      "example": "0"
+                    },
+                    "source": {
+                      "type": "string",
+                      "example": "https://s3.amazonaws.com/file.jpg"
+                    }
+                  }
+                }
+              },
+              "type": {
+                "type": "string",
+                "example": "quality"
+              }
+            }
+          }
         },
         "inspectionStandards": {
           "type": "array",
@@ -1942,7 +2094,7 @@
                 "properties": {
                   "aqlId": {
                     "type": "string",
-                    "example": "7754336e-c9d5-11e7-90c1-0242ac110013"
+                    "example": "aql_id"
                   },
                   "aqlName": {
                     "type": "string",
@@ -2005,7 +2157,7 @@
               },
               "inspectionId": {
                 "type": "string",
-                "example": "db4b5cac-5df6-11e8-8ba4-a674cb2d4710"
+                "example": "inspection_id"
               },
               "maxAllowed": {
                 "type": "object",
