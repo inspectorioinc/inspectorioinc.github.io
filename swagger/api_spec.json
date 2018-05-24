@@ -1,0 +1,2078 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This document describes the APIs to integrate with Inspectorio’s SaaS system",
+    "title": "API INTEGRATION",
+    "version": "v1"
+  },
+  "host": "integration.saas.inspectorio.com",
+  "basePath": "/api/v1/",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The username and password will be in JSON format. The password must be hashed with SHA512.",
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/AuthenticationSchema"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The token and refreshToken is returned. The token must be added to header to all other requests to server. The token will be expired in 24 hours. When the token is expired, the client can acquire a new token by using refresh token API that is described in the next section",
+            "schema": {
+              "$ref": "#/definitions/LoginSchema"
+            }
+          },
+          "401": {
+            "description": "Unauthorized error.",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ],
+        "description": "Client provides username and password to login to SaaS. After SaaS verifies successfully, SaaS generates a token and returns in the response. This token must be included in header of all other requests to SaaS."
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "refreshToken": {
+                  "type": "string",
+                  "description": "The refreshToken returned in Login API",
+                  "example": "8111eed4-283c-4f9d-9e23-1aac0fe3b9ea"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The new token and refresh-token is returned.",
+            "schema": {
+              "$ref": "#/definitions/LoginSchema"
+            }
+          },
+          "400": {
+            "description": "The refresh-token is not included in the request header",
+            "schema": {
+              "$ref": "#/definitions/BadRequestError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized error.",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ],
+        "description": "The token will be expired after 24 hours and the client must acquire a new token to continue its works by requesting a refresh token."
+      }
+    },
+    "/pos": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Provided at Login step",
+            "format": "uuid",
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "default": 10,
+            "description": "The number of items to return",
+            "in": "query",
+            "maximum": 100,
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Next item",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of POs in JSON format",
+            "schema": {
+              "properties": {
+                "offset": {
+                  "example": 10,
+                  "type": "integer"
+                },
+                "data": {
+                  "items": {
+                    "$ref": "#/definitions/PoSchema"
+                  },
+                  "type": "array"
+                },
+                "limit": {
+                  "example": 10,
+                  "type": "integer"
+                },
+                "total": {
+                  "example": 50,
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "The token is not included in the request header",
+            "schema": {
+              "$ref": "#/definitions/BadRequestError"
+            }
+          },
+          "403": {
+            "description": "The token is invalid",
+            "schema": {
+              "$ref": "#/definitions/InvalidTokenError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "POs"
+        ],
+        "description": "This API allows client to retrieve all PO information"
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Provided at Login step",
+            "format": "uuid",
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The whole data of PO in JSON format.",
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NewPoSchema"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The content of PO in JSON format",
+            "schema": {
+              "$ref": "#/definitions/PoSchema"
+            }
+          },
+          "400": {
+            "description": "Unexpected error.",
+            "schema": {
+              "$ref": "#/definitions/BadRequestError"
+            }
+          },
+          "403": {
+            "description": "The token is invalid",
+            "schema": {
+              "$ref": "#/definitions/InvalidTokenError"
+            }
+          },
+          "409": {
+            "description": "The PO with same number already exists in the system",
+            "schema": {
+              "$ref": "#/definitions/PoAlreadyExistError"
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "$ref": "#/definitions/ValidationError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "POs"
+        ],
+        "description": "This API allows client to add new PO"
+      }
+    },
+    "/pos/{po_id}": {
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Provided at Login step",
+            "format": "uuid",
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Existing PO number",
+            "in": "path",
+            "name": "po_id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted."
+          },
+          "400": {
+            "description": "Unexpected error.",
+            "schema": {
+              "$ref": "#/definitions/BadRequestError"
+            }
+          },
+          "403": {
+            "description": "The token is invalid",
+            "schema": {
+              "$ref": "#/definitions/InvalidTokenError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "POs"
+        ],
+        "description": "This API allows client to delete an existing PO"
+      },
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Provided at Login step",
+            "format": "uuid",
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Existing PO number",
+            "in": "path",
+            "name": "po_id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The content of PO in JSON format",
+            "schema": {
+              "$ref": "#/definitions/PoSchema"
+            }
+          },
+          "400": {
+            "description": "Unexpected error.",
+            "schema": {
+              "$ref": "#/definitions/BadRequestError"
+            }
+          },
+          "403": {
+            "description": "The token is invalid",
+            "schema": {
+              "$ref": "#/definitions/InvalidTokenError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "POs"
+        ],
+        "description": "This API allows client to retrieve information of a specific PO"
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Provided at Login step",
+            "format": "uuid",
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Existing PO number",
+            "in": "path",
+            "name": "po_id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The whole data of PO in JSON format.",
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NewPoSchema"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The content of PO in JSON format",
+            "schema": {
+              "$ref": "#/definitions/PoSchema"
+            }
+          },
+          "400": {
+            "description": "Unexpected error.",
+            "schema": {
+              "$ref": "#/definitions/BadRequestError"
+            }
+          },
+          "403": {
+            "description": "The token is invalid",
+            "schema": {
+              "$ref": "#/definitions/InvalidTokenError"
+            }
+          },
+          "409": {
+            "description": "The PO with same number already exists in the system",
+            "schema": {
+              "$ref": "#/definitions/PoAlreadyExistError"
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "$ref": "#/definitions/ValidationError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "POs"
+        ],
+        "description": "This API allows client to update information of an existing PO"
+      }
+    },
+    "/reports/{report_id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Provided at Login step",
+            "format": "uuid",
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Existing PO number",
+            "in": "path",
+            "name": "report_id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The content of PO in JSON format",
+            "schema": {
+              "$ref": "#/definitions/ReportSchema"
+            }
+          },
+          "400": {
+            "description": "Unexpected error.",
+            "schema": {
+              "$ref": "#/definitions/BadRequestError"
+            }
+          },
+          "403": {
+            "description": "The token is invalid",
+            "schema": {
+              "$ref": "#/definitions/InvalidTokenError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "Reports"
+        ],
+        "description": "This API allows client to retrieve information of a specific Report"
+      }
+    }
+  },
+  "definitions": {
+    "AuthenticationSchema": {
+      "properties": {
+        "password": {
+          "example": "92450fc7129f47bda6cbc9e84b9c9e96...",
+          "format": "sha512",
+          "type": "string"
+        },
+        "username": {
+          "example": "youremail@yourdomain.com",
+          "format": "email",
+          "type": "string"
+        }
+      },
+      "required": [
+        "username",
+        "password"
+      ],
+      "type": "object"
+    },
+    "LoginSchema": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "properties": {
+            "refreshToken": {
+              "example": "8111eed4-283c-4f9d-9e23-1aac0fe3b9ea",
+              "format": "uuid",
+              "type": "string"
+            },
+            "token": {
+              "example": "8111eed4-283c-4f9d-9e23-1aac0fe3b9ea",
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "refreshToken",
+            "token"
+          ],
+          "type": "object"
+        }
+      }
+    },
+    "NewPoSchema": {
+      "properties": {
+        "vendorId": {
+          "example": "Vendor237196",
+          "type": "string"
+        },
+        "poNumber": {
+          "example": "PO Number",
+          "type": "string",
+          "description": "Unique key"
+        },
+        "productLineId": {
+          "example": "12345",
+          "type": "string"
+        },
+        "clientId": {
+          "example": "Client237196",
+          "type": "string"
+        },
+        "deliveryDate": {
+          "example": "2018-01-20T07:43:00Z",
+          "format": "date",
+          "type": "string"
+        },
+        "factoryId": {
+          "example": "Factory237196",
+          "type": "string"
+        },
+        "opoNumber": {
+          "example": "OPO Number",
+          "type": "string"
+        },
+        "styles": {
+          "items": {
+            "properties": {
+              "assortments": {
+                "items": {
+                  "$ref": "#/definitions/AssortmentSchema"
+                },
+                "type": "array"
+              },
+              "productCategoryId": {
+                "example": "123456",
+                "type": "string"
+              },
+              "solids": {
+                "items": {
+                  "$ref": "#/definitions/SolidSchema"
+                },
+                "type": "array"
+              },
+              "ratio": {
+                "$ref": "#/definitions/RatioSchema"
+              },
+              "styleDescription": {
+                "example": "237196FFFFF",
+                "type": "string"
+              },
+              "styleId": {
+                "example": "237196FFFFF",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "poNumber",
+        "vendorId",
+        "productLineId"
+      ],
+      "type": "object"
+    },
+    "PoSchema": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "properties": {
+            "clientId": {
+              "example": "Client237196",
+              "type": "string"
+            },
+            "clientName": {
+              "example": "Client Name",
+              "type": "string"
+            },
+            "createdDate": {
+              "example": "2018-01-20T07:43:00Z",
+              "format": "date",
+              "type": "string"
+            },
+            "deliveryDate": {
+              "example": "2018-01-20T07:43:00Z",
+              "format": "date",
+              "type": "string"
+            },
+            "factoryId": {
+              "example": "Factory237196",
+              "type": "string"
+            },
+            "factoryName": {
+              "example": "Factory Name",
+              "type": "string"
+            },
+            "opoNumber": {
+              "example": "OPO Number",
+              "type": "string"
+            },
+            "poNumber": {
+              "example": "PO Number",
+              "type": "string"
+            },
+            "productLineId": {
+              "example": "12345",
+              "type": "string"
+            },
+            "productLineName": {
+              "example": "Footwear",
+              "type": "string"
+            },
+            "styles": {
+              "items": {
+                "properties": {
+                  "assortments": {
+                    "items": {
+                      "$ref": "#/definitions/AssortmentSchema"
+                    },
+                    "type": "array"
+                  },
+                  "productCategoryId": {
+                    "example": "123456",
+                    "type": "string"
+                  },
+                  "solids": {
+                    "items": {
+                      "$ref": "#/definitions/SolidSchema"
+                    },
+                    "type": "array"
+                  },
+                  "ratio": {
+                    "$ref": "#/definitions/RatioSchema"
+                  },
+                  "styleDescription": {
+                    "example": "237196FFFFF",
+                    "type": "string"
+                  },
+                  "styleId": {
+                    "example": "237196FFFFF",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "updatedDate": {
+              "example": "2018-01-20T07:43:00Z",
+              "format": "date",
+              "type": "string"
+            },
+            "vendorId": {
+              "example": "Vendor237196",
+              "type": "string"
+            },
+            "vendorName": {
+              "example": "Vendor Name",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      }
+    },
+    "AssortmentSchema": {
+      "properties": {
+        "assortmentId": {
+          "example": "Assortment Id",
+          "type": "string"
+        },
+        "cartonQuantity": {
+          "example": 10,
+          "type": "integer"
+        },
+        "items": {
+          "items": {
+            "properties": {
+              "color": {
+                "example": "Red",
+                "type": "string"
+              },
+              "configuration": {
+                "example": 2,
+                "type": "integer"
+              },
+              "itemId": {
+                "example": "Item Id",
+                "type": "string"
+              },
+              "quantity": {
+                "example": 20,
+                "type": "integer"
+              },
+              "size": {
+                "example": "L",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "SolidSchema": {
+      "properties": {
+        "color": {
+          "example": "Red",
+          "type": "string"
+        },
+        "itemId": {
+          "example": "Item Id",
+          "type": "string"
+        },
+        "quantity": {
+          "example": 20,
+          "type": "integer"
+        },
+        "size": {
+          "example": "L",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "RatioSchema": {
+      "properties": {
+        "quantity": {
+          "example": 20,
+          "type": "integer"
+        },
+        "cartonQuantity": {
+          "example": 20,
+          "type": "integer"
+        },
+        "colors": {
+          "items": {
+            "properties": {
+              "name": {
+                "example": "Red",
+                "type": "string"
+              },
+              "value": {
+                "example": 5,
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "sizes": {
+          "items": {
+            "properties": {
+              "name": {
+                "example": "L",
+                "type": "string"
+              },
+              "value": {
+                "example": 5,
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ReportSchema": {
+      "type": "object",
+      "properties": {
+        "inspectionDefectList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "assortmentId": {
+                "type": "string",
+                "example": "-"
+              },
+              "clarification": {
+                "type": "string",
+                "example": "Major"
+              },
+              "color": {
+                "type": "string",
+                "example": "EBONY"
+              },
+              "defectCategory": {
+                "type": "string",
+                "example": "Construction"
+              },
+              "defectCode": {
+                "type": "string",
+                "example": "CON004"
+              },
+              "defectId": {
+                "type": "string",
+                "example": "aab3c866-b9d3-4e69-a127-143a38fe84f4_workmanship_0"
+              },
+              "defectName": {
+                "type": "string",
+                "example": "CON004 - Major Construction defects"
+              },
+              "description": {
+                "type": "string",
+                "example": "CON004 - Major Construction defects."
+              },
+              "group": {
+                "type": "string",
+                "example": "workmanship"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "db4b5cac-5df6-11e8-8ba4-a674cb2d4710"
+              },
+              "item": {
+                "type": "string",
+                "example": "331-11-0152"
+              },
+              "itemDescription": {
+                "type": "string",
+                "example": "workmanship"
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "293414"
+              },
+              "photos": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string",
+                      "example": "-"
+                    },
+                    "rotateAngle": {
+                      "type": "string",
+                      "example": "0"
+                    },
+                    "source": {
+                      "type": "string",
+                      "example": "https://s3.amazonaws.com/inspectorio-files-upload-production/organization_293414/images/mobile/64a54a80-3810-417b-b148-77c23a793b64.jpg"
+                    }
+                  }
+                }
+              },
+              "productCategory": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "117011"
+                }
+              },
+              "size": {
+                "type": "string",
+                "example": "S"
+              },
+              "style": {
+                "type": "string",
+                "example": "00548337"
+              },
+              "totalDefects": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          }
+        },
+        "inspectionGeneral": {
+          "items": {
+            "type": "object",
+            "properties": {
+              "assignmentId": {
+                "type": "string",
+                "example": "aab3c866-b9d3-4e69-a127-143a38fe84f4"
+              },
+              "car": {
+                "type": "boolean",
+                "example": false
+              },
+              "caseNumber": {
+                "type": "string",
+                "example": "SampleCaseNumber"
+              },
+              "clientId": {
+                "type": "string",
+                "example": "252437"
+              },
+              "country": {
+                "type": "string",
+                "example": "-"
+              },
+              "createdDate": {
+                "type": "integer",
+                "example": 1527017545805
+              },
+              "docx_url": {
+                "type": "string",
+                "example": "https://s3.amazonaws.com/inspectorio-files-upload-production/organization_252437/documents/inspections/46672018-05-22SAE-ATEXPIAIIISADUPRO_5d806404-5e08-11e8-8321-965e7b5239155d82b632-5e08-11e8-8321-965e7b523915.docx"
+              },
+              "factoryId": {
+                "type": "string",
+                "example": "293187"
+              },
+              "inspectionDate": {
+                "type": "integer",
+                "example": 1527017545800
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "db4b5cac-5df6-11e8-8ba4-a674cb2d4710"
+              },
+              "inspectionInformation": {
+                "type": "object",
+                "properties": {
+                  "autoAssign": {
+                    "type": "string",
+                    "example": "office"
+                  },
+                  "bookingFormVersion": {
+                    "type": "string",
+                    "example": "6e30519e-ed17-4a46-83cd-ef97d71c97dd"
+                  },
+                  "bookingId": {
+                    "type": "string",
+                    "example": "5bc94c28-ffd7-4da1-8151-92c0c69d6572"
+                  },
+                  "brandRetailerInformation": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "Brand Name"
+                      },
+                      "organizationId": {
+                        "type": "string",
+                        "example": "252437"
+                      }
+                    }
+                  },
+                  "caseId": {
+                    "type": "string",
+                    "example": "1526422439"
+                  },
+                  "caseNumber": {
+                    "type": "string",
+                    "example": "SampleCaseNumber"
+                  },
+                  "confirmedBy": {
+                    "type": "string",
+                    "example": "Lori Stoughton"
+                  },
+                  "createTime": {
+                    "type": "integer",
+                    "example": 1526422438510
+                  },
+                  "currentNumber": {
+                    "type": "string",
+                    "example": "4667"
+                  },
+                  "detailOfPIPO": {
+                    "type": "object",
+                    "properties": {
+                      "isHaveStyleFromPool": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "pipoInformation": {
+                        "type": "object",
+                        "properties": {
+                          "poNumber": {
+                            "type": "string",
+                            "example": "SampleCaseNumber"
+                          },
+                          "poTypes": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "example": "replenishment"
+                            }
+                          },
+                          "productLine": {
+                            "type": "string",
+                            "example": "540"
+                          },
+                          "productLineName": {
+                            "type": "string",
+                            "example": "APPAREL"
+                          }
+                        }
+                      },
+                      "styles": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "feStyleId": {
+                              "type": "string",
+                              "example": "SkeFB6cdCf"
+                            },
+                            "measurements": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "code": {
+                                    "type": "string",
+                                    "example": "A16S.R"
+                                  },
+                                  "codeName": {
+                                    "type": "string",
+                                    "example": "NK WDTH SEAM"
+                                  },
+                                  "sizes": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "measurement": {
+                                          "type": "string",
+                                          "example": "9"
+                                        },
+                                        "size": {
+                                          "type": "string",
+                                          "example": "XS"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "tolerance": {
+                                    "type": "string",
+                                    "example": "0.5"
+                                  },
+                                  "unit": {
+                                    "type": "string",
+                                    "example": "inch"
+                                  }
+                                }
+                              }
+                            },
+                            "productCategory": {
+                              "type": "string",
+                              "example": "117011"
+                            },
+                            "productCategoryName": {
+                              "type": "string",
+                              "example": "Shirts"
+                            },
+                            "productDescription": {
+                              "type": "string",
+                              "example": "WILD FABLE"
+                            },
+                            "solidDetail": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "availableQuantity": {
+                                    "type": "string",
+                                    "example": "350"
+                                  },
+                                  "color": {
+                                    "type": "string",
+                                    "example": "EBONY"
+                                  },
+                                  "id": {
+                                    "type": "string",
+                                    "example": "331-11-0151"
+                                  },
+                                  "orderQuantity": {
+                                    "type": "integer",
+                                    "example": 7479
+                                  },
+                                  "size": {
+                                    "type": "string",
+                                    "example": "XS"
+                                  }
+                                }
+                              }
+                            },
+                            "styleId": {
+                              "type": "string",
+                              "example": "S3275_00548337"
+                            },
+                            "styleName": {
+                              "type": "string",
+                              "example": "00548337"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "expectedDate": {
+                    "type": "object",
+                    "properties": {
+                      "inspectionDate": {
+                        "type": "integer",
+                        "example": 1526947200000
+                      },
+                      "shipmentDate": {
+                        "type": "integer",
+                        "example": 1529452800000
+                      }
+                    }
+                  },
+                  "factoryInformation": {
+                    "type": "object",
+                    "properties": {
+                      "address": {
+                        "type": "string",
+                        "example": "Sample Address"
+                      },
+                      "contact": {
+                        "type": "object",
+                        "properties": {
+                          "contactId": {
+                            "type": "string",
+                            "example": "288390"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "sample@email.com"
+                          },
+                          "mobileNumber": {
+                            "type": "string",
+                            "example": "52226110"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Sample Name"
+                          }
+                        }
+                      },
+                      "country": {
+                        "type": "string",
+                        "example": "GT"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Sample Name"
+                      },
+                      "organizationId": {
+                        "type": "string",
+                        "example": "293187"
+                      }
+                    }
+                  },
+                  "fromOrganizationId": {
+                    "type": "string",
+                    "example": "291715"
+                  },
+                  "fromOrganizationName": {
+                    "type": "string",
+                    "example": "Sample Org Name"
+                  },
+                  "inspectionInformation": {
+                    "type": "object",
+                    "properties": {
+                      "typeOfInspection": {
+                        "type": "string",
+                        "example": "DUPRO"
+                      },
+                      "typeOfInspectionName": {
+                        "type": "string",
+                        "example": "During Production"
+                      }
+                    }
+                  },
+                  "locationPicker": {
+                    "type": "object",
+                    "properties": {
+                      "address": {
+                        "type": "string",
+                        "example": "Sample Address"
+                      },
+                      "gpsLocation": {
+                        "type": "object",
+                        "properties": {
+                          "latitude": {
+                            "type": "string",
+                            "example": "14.497520229792686"
+                          },
+                          "longitude": {
+                            "type": "string",
+                            "example": "-90.5809641257772"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "organizationId": {
+                    "type": "string",
+                    "example": "252437"
+                  },
+                  "poIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": "po_id"
+                    }
+                  },
+                  "poTypeObjs": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "poType": {
+                          "type": "string",
+                          "example": "replenishment"
+                        },
+                        "poTypeName": {
+                          "type": "string",
+                          "example": "Replenishment"
+                        }
+                      }
+                    }
+                  },
+                  "pos": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "poId": {
+                          "type": "string",
+                          "example": "po_id"
+                        },
+                        "poNumber": {
+                          "type": "string",
+                          "example": "SamplePoNumber"
+                        },
+                        "poType": {
+                          "type": "string",
+                          "example": "replenishment"
+                        },
+                        "poTypeName": {
+                          "type": "string",
+                          "example": "Replenishment"
+                        }
+                      }
+                    }
+                  },
+                  "productCategory": {
+                    "type": "string",
+                    "example": "Shirts"
+                  },
+                  "status": {
+                    "type": "string",
+                    "example": "NEW"
+                  },
+                  "supplierVendorInformation": {
+                    "type": "object",
+                    "properties": {
+                      "address": {
+                        "type": "string",
+                        "example": "Sample Address"
+                      },
+                      "contact": {
+                        "type": "object",
+                        "properties": {
+                          "contactId": {
+                            "type": "string",
+                            "example": "288011"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "sample@email.com"
+                          },
+                          "mobileNumber": {
+                            "type": "string",
+                            "example": "1"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Sample Name"
+                          },
+                          "telephoneNumber": {
+                            "type": "string",
+                            "example": "123456789"
+                          }
+                        }
+                      },
+                      "customId": {
+                        "type": "string",
+                        "example": "S3275"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Sample Name"
+                      },
+                      "organizationId": {
+                        "type": "string",
+                        "example": "org_id"
+                      },
+                      "supplierIdDisabled": {
+                        "type": "boolean",
+                        "example": false
+                      }
+                    }
+                  },
+                  "toOrganizationId": {
+                    "type": "string",
+                    "example": "to_org_id"
+                  },
+                  "toOrganizationName": {
+                    "type": "string",
+                    "example": "Sample Org Name"
+                  },
+                  "updatedTime": {
+                    "type": "integer",
+                    "example": 1526422438510
+                  },
+                  "whoCreated": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string",
+                        "example": "sample@email.com"
+                      },
+                      "id": {
+                        "type": "integer",
+                        "example": 2589
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Sample Name"
+                      },
+                      "username": {
+                        "type": "string",
+                        "example": "SampleUsername"
+                      },
+                      "uuid": {
+                        "type": "string",
+                        "example": "fd68961f-8330-4e95-96ea-4e43bcc01287"
+                      }
+                    }
+                  }
+                }
+              },
+              "inspectionResult": {
+                "type": "string",
+                "example": "pass"
+              },
+              "inspection_location_address": {
+                "type": "object",
+                "properties": {
+                  "inspection_city": {
+                    "type": "string",
+                    "example": "Villa Nueva"
+                  },
+                  "inspection_country": {
+                    "type": "string",
+                    "example": "Guatemala"
+                  }
+                }
+              },
+              "inspectorId": {
+                "type": "string",
+                "example": "2627"
+              },
+              "inspectorName": {
+                "type": "string",
+                "example": "Sample Name"
+              },
+              "isSharedBySchedulerReportSharing": {
+                "type": "boolean",
+                "example": true
+              },
+              "lastUpdated": {
+                "type": "integer",
+                "example": 1527025070384
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "org_id"
+              },
+              "pdf_url": {
+                "type": "string",
+                "example": "https://s3.amazonaws.com/inspectorio-files-upload-production/organization_252437/documents/inspections/46672018-05-22SAE-ATEXPIAIIISADUPRO_5ed3e0f6-5e08-11e8-8321-965e7b5239155ed4ff72-5e08-11e8-8321-965e7b523915.pdf"
+              },
+              "productCategories": {
+                "type": "string",
+                "example": "117011"
+              },
+              "productLine": {
+                "type": "string",
+                "example": "540"
+              },
+              "shared_organizations": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "org_id"
+                }
+              },
+              "status": {
+                "type": "string",
+                "example": "completed"
+              },
+              "supplierId": {
+                "type": "string",
+                "example": "vendor_id"
+              },
+              "timezone": {
+                "type": "integer",
+                "example": -6
+              },
+              "toOrganizationId": {
+                "type": "string",
+                "example": "to_org_id"
+              },
+              "typeOfInspection": {
+                "type": "string",
+                "example": "DUPRO"
+              }
+            }
+          },
+          "type": "array"
+        },
+        "inspectionMeasurementDimensions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "color": {
+                "type": "string",
+                "example": "EBONY"
+              },
+              "dimensionId": {
+                "type": "string",
+                "example": "dimension_id"
+              },
+              "dimensionIndex": {
+                "type": "integer",
+                "example": 8
+              },
+              "id": {
+                "type": "string",
+                "example": "331-11-0154"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "itemId": {
+                "type": "string",
+                "example": "item_id"
+              },
+              "measurementDescription": {
+                "type": "string",
+                "example": "ACRS BK SHLDR"
+              },
+              "occurrences": {
+                "type": "integer",
+                "example": 0
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "org_id"
+              },
+              "samples": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "Sample 1"
+                    },
+                    "value": {
+                      "type": "number",
+                      "example": 23.25
+                    }
+                  }
+                }
+              },
+              "size": {
+                "type": "string",
+                "example": "L"
+              },
+              "skuIndex": {
+                "type": "integer",
+                "example": 3
+              },
+              "standard": {
+                "type": "number",
+                "example": 23.25
+              },
+              "styleName": {
+                "type": "string",
+                "example": "00548337"
+              },
+              "tolerance": {
+                "type": "number",
+                "example": 0.5
+              },
+              "unit": {
+                "type": "string",
+                "example": "inch"
+              }
+            }
+          }
+        },
+        "inspectionPhotos": {
+          "type": "array",
+          "items": {}
+        },
+        "inspectionQuestions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "groupId": {
+                "type": "string",
+                "example": "e3f7a2f8-7909-4b7b-9565-b1c23891f9b6"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "label": {
+                "type": "string",
+                "example": "Is the product subject to mold / mildew requirements?"
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "actions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "action": {
+                            "type": "string",
+                            "example": "request_picture"
+                          },
+                          "value": {
+                            "type": "string",
+                            "example": "randomly_percentage"
+                          }
+                        }
+                      }
+                    },
+                    "failResponse": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "chk__122"
+                    },
+                    "value": {
+                      "type": "string",
+                      "example": "YES"
+                    }
+                  }
+                }
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "252437"
+              },
+              "questionId": {
+                "type": "string",
+                "example": "aab3c866-b9d3-4e69-a127-143a38fe84f4_340553ad-6461-4a66-be8d-ce4c0e55e8de"
+              },
+              "type": {
+                "type": "string",
+                "example": "yes_no"
+              }
+            }
+          }
+        },
+        "inspectionRFID": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "barcode": {
+                "type": "string",
+                "example": "490760310776"
+              },
+              "code": {
+                "type": "string",
+                "example": "3504AE253002A181A13B9C59"
+              },
+              "decodedCode": {
+                "type": "string",
+                "example": "490760310776"
+              },
+              "id": {
+                "type": "string",
+                "example": "6a018f53-d378-4265-b04a-ddaf62ad65f4-2018-04-19-11-00-053"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "matched": {
+                "type": "boolean",
+                "example": true
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "org_id"
+              },
+              "photos": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "https://s3.amazonaws.com/image.jpg"
+                }
+              }
+            }
+          }
+        },
+        "inspectionResult": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "groupName": {
+                "type": "string",
+                "example": "Target PO or Packing List"
+              },
+              "includeInReport": {
+                "type": "boolean",
+                "example": true
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "db4b5cac-5df6-11e8-8ba4-a674cb2d4710"
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "293414"
+              },
+              "resultId": {
+                "type": "string",
+                "example": "065310f6-6574-4088-99b4-3ceae6ef438a"
+              },
+              "status": {
+                "type": "string",
+                "example": "pass"
+              }
+            }
+          }
+        },
+        "inspectionSampleSelection": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "inspectionId": {
+                "type": "string",
+                "example": "db4b5cac-5df6-11e8-8ba4-a674cb2d4710"
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "293414"
+              },
+              "sampleSelection": {
+                "type": "integer",
+                "example": 50
+              },
+              "sampleSize": {
+                "type": "integer",
+                "example": 50
+              },
+              "totalInspectionQuantity": {
+                "type": "integer",
+                "example": 2100
+              }
+            }
+          }
+        },
+        "inspectionSampleSelectionSamples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "assortment": {
+                "type": "string",
+                "example": "solid"
+              },
+              "assortmentQuantity": {
+                "type": "string",
+                "example": "-"
+              },
+              "cartonPull": {
+                "type": "integer",
+                "example": 3
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "db4b5cac-5df6-11e8-8ba4-a674cb2d4710"
+              },
+              "item": {
+                "type": "string",
+                "example": "331-11-0151"
+              },
+              "itemOrderQuantity": {
+                "type": "integer",
+                "example": 350
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "293414"
+              },
+              "sampleId": {
+                "type": "string",
+                "example": "00548337__solid__331-11-01510"
+              },
+              "samplePull": {
+                "type": "integer",
+                "example": 9
+              },
+              "style": {
+                "type": "string",
+                "example": "00548337"
+              },
+              "styleOrderQuantity": {
+                "type": "integer",
+                "example": 2100
+              }
+            }
+          }
+        },
+        "inspectionSpecialAttentionPoint": {
+          "type": "array",
+          "items": {}
+        },
+        "inspectionStandards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "aql": {
+                "type": "object",
+                "properties": {
+                  "aqlId": {
+                    "type": "string",
+                    "example": "7754336e-c9d5-11e7-90c1-0242ac110013"
+                  },
+                  "aqlName": {
+                    "type": "string",
+                    "example": "Measurement"
+                  },
+                  "critical": {
+                    "type": "string",
+                    "example": "6.5"
+                  },
+                  "major": {
+                    "type": "string",
+                    "example": "6.5"
+                  },
+                  "minor": {
+                    "type": "string",
+                    "example": "6.5"
+                  }
+                }
+              },
+              "availableQuantity": {
+                "type": "integer",
+                "example": 2100
+              },
+              "defectFound": {
+                "type": "object",
+                "properties": {
+                  "critical": {
+                    "type": "integer",
+                    "example": 0
+                  },
+                  "major": {
+                    "type": "integer",
+                    "example": 0
+                  },
+                  "minor": {
+                    "type": "integer",
+                    "example": 0
+                  }
+                }
+              },
+              "determineDesc": {
+                "type": "string",
+                "example": "AQL Standard "
+              },
+              "determineType": {
+                "type": "string",
+                "example": "aqlTable"
+              },
+              "determineValue": {
+                "type": "integer",
+                "example": 0
+              },
+              "failReason": {
+                "type": "string",
+                "example": "-"
+              },
+              "group": {
+                "type": "string",
+                "example": "measurement"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "db4b5cac-5df6-11e8-8ba4-a674cb2d4710"
+              },
+              "maxAllowed": {
+                "type": "object",
+                "properties": {
+                  "critical": {
+                    "type": "integer",
+                    "example": 0
+                  },
+                  "major": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "minor": {
+                    "type": "integer",
+                    "example": 0
+                  }
+                }
+              },
+              "maximumSampleSize": {
+                "type": "integer",
+                "example": 8
+              },
+              "minimumSampleSize": {
+                "type": "integer",
+                "example": 8
+              },
+              "noOfDefectiveItems": {
+                "type": "integer",
+                "example": 0
+              },
+              "noOfDefectiveUnits": {
+                "type": "integer",
+                "example": 0
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "293414"
+              },
+              "packingType": {
+                "type": "string",
+                "example": "Solid"
+              },
+              "sampleSizeCategory": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productCategory": {
+                      "type": "string",
+                      "example": "117011"
+                    },
+                    "sampleSize": {
+                      "type": "integer",
+                      "example": 8
+                    }
+                  }
+                }
+              },
+              "totalDefects": {
+                "type": "integer",
+                "example": 0
+              },
+              "totalItems": {
+                "type": "integer",
+                "example": 6
+              }
+            }
+          }
+        }
+      }
+    },
+    "SystemError": {
+      "properties": {
+        "message": {
+          "example": "Internal system error. Please contact the administrator.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "PoAlreadyExistError": {
+      "properties": {
+        "message": {
+          "example": "The PO with same number already exists.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "InvalidTokenError": {
+      "properties": {
+        "message": {
+          "example": "Invalid token.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "UnauthorizedError": {
+      "properties": {
+        "message": {
+          "example": "Incorrect user name or password.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "BadRequestError": {
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Bad request message"
+        }
+      },
+      "type": "object"
+    },
+    "ValidationError": {
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Validation error message"
+        },
+        "errors": {
+          "properties": {
+            "vendorId": {
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "vendorId not exist",
+                "vendorId invalid"
+              ],
+              "type": "array"
+            },
+            "factoryId": {
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "factoryId not exist",
+                "factoryId invalid"
+              ],
+              "type": "array"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "tags": [
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "POs"
+    }
+  ]
+}
