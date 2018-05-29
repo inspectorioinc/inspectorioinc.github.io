@@ -1,6 +1,5 @@
 {
   "swagger": "2.0",
-  "title": "Integration API Spec",
   "info": {
     "description": "This document describes the APIs to integrate with Inspectorio’s SaaS system",
     "title": "API INTEGRATION",
@@ -245,10 +244,15 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "The content of PO in JSON format",
             "schema": {
-              "$ref": "#/definitions/PoSchema"
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/PoSchema"
+                }
+              },
+              "type": "object"
             }
           },
           "400": {
@@ -377,7 +381,12 @@
           "200": {
             "description": "The content of PO in JSON format",
             "schema": {
-              "$ref": "#/definitions/PoSchema"
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/PoSchema"
+                }
+              },
+              "type": "object"
             }
           },
           "400": {
@@ -447,7 +456,12 @@
           "200": {
             "description": "The content of PO in JSON format",
             "schema": {
-              "$ref": "#/definitions/PoSchema"
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/PoSchema"
+                }
+              },
+              "type": "object"
             }
           },
           "400": {
@@ -487,6 +501,424 @@
         "description": "Update information of an existing PO"
       }
     },
+    "/styles/{style_id}/measurements": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Provided at Login step",
+            "format": "uuid",
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Measurements in JSON format",
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "$ref": "#/definitions/PomSchema"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "The token is not included in the request header",
+            "schema": {
+              "$ref": "#/definitions/BadRequestError"
+            }
+          },
+          "403": {
+            "description": "The token is invalid",
+            "schema": {
+              "$ref": "#/definitions/InvalidTokenError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "Measurements"
+        ],
+        "description": "This API allows client to retrieve Measurement information of Style"
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Provided at Login step",
+            "format": "uuid",
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The whole data of PO in JSON format.",
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NewPomSchema"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The content of Measurements in JSON format",
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "$ref": "#/definitions/PomSchema"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Unexpected error.",
+            "schema": {
+              "$ref": "#/definitions/BadRequestError"
+            }
+          },
+          "403": {
+            "description": "The token is invalid",
+            "schema": {
+              "$ref": "#/definitions/InvalidTokenError"
+            }
+          },
+          "409": {
+            "description": "The Measurement with same number already exists in the system",
+            "schema": {
+              "$ref": "#/definitions/PoAlreadyExistError"
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "$ref": "#/definitions/ValidationError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "Measurements"
+        ],
+        "description": "This API allows client to add new Measurements"
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Provided at Login step",
+            "format": "uuid",
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The whole data of Measurements in JSON format.",
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/NewPomSchema"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The content of Measurements in JSON format",
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "$ref": "#/definitions/PomSchema"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Unexpected error.",
+            "schema": {
+              "$ref": "#/definitions/BadRequestError"
+            }
+          },
+          "403": {
+            "description": "The token is invalid",
+            "schema": {
+              "$ref": "#/definitions/InvalidTokenError"
+            }
+          },
+          "409": {
+            "description": "The Measurement with same number already exists in the system",
+            "schema": {
+              "$ref": "#/definitions/PoAlreadyExistError"
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "$ref": "#/definitions/ValidationError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "Measurements"
+        ],
+        "description": "This API allows client to update information of an existing Measurements"
+      }
+    },
+    "/assignments": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Provided at Login step",
+            "format": "uuid",
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "default": 10,
+            "description": "The number of items to return",
+            "in": "query",
+            "maximum": 10,
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Next item",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Sorting data",
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "example": "created_date:desc|asc",
+            "type": "string"
+          },
+          {
+            "description": "Assignment status",
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "example": "NEW",
+            "type": "string"
+          },
+          {
+            "description": "Created time range (from) with UTC format",
+            "in": "query",
+            "name": "created_from",
+            "required": false,
+            "example": "2018-01-20T07:43:00Z",
+            "format": "date",
+            "type": "string"
+          },
+          {
+            "description": "Created time range (to) with UTC format",
+            "in": "query",
+            "name": "created_to",
+            "required": false,
+            "example": "2018-01-30T07:43:00Z",
+            "format": "date",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Reports in JSON format",
+            "schema": {
+              "properties": {
+                "offset": {
+                  "example": 10,
+                  "type": "integer"
+                },
+                "data": {
+                  "items": {
+                    "$ref": "#/definitions/AssignmentSchema"
+                  },
+                  "type": "array"
+                },
+                "limit": {
+                  "example": 10,
+                  "type": "integer"
+                },
+                "total": {
+                  "example": 50,
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "The token is not included in the request header",
+            "schema": {
+              "$ref": "#/definitions/BadRequestError"
+            }
+          },
+          "403": {
+            "description": "The token is invalid",
+            "schema": {
+              "$ref": "#/definitions/InvalidTokenError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "Assignments"
+        ],
+        "description": "Get all Assignments information"
+      }
+    },
+    "/assignments/{assignment_id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "content-type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Provided at Login step",
+            "format": "uuid",
+            "in": "header",
+            "name": "token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Existing assignment id",
+            "in": "path",
+            "name": "assignment_id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The content of Assignment in JSON format",
+            "schema": {
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/AssignmentSchema"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Unexpected error.",
+            "schema": {
+              "$ref": "#/definitions/BadRequestError"
+            }
+          },
+          "403": {
+            "description": "The token is invalid",
+            "schema": {
+              "$ref": "#/definitions/InvalidTokenError"
+            }
+          },
+          "500": {
+            "description": "System error",
+            "schema": {
+              "$ref": "#/definitions/SystemError"
+            }
+          }
+        },
+        "tags": [
+          "Assignments"
+        ],
+        "description": "Get information of a specific Assignment"
+      }
+    },
     "/reports": {
       "get": {
         "produces": [
@@ -512,7 +944,7 @@
             "default": 10,
             "description": "The number of items to return",
             "in": "query",
-            "maximum": 100,
+            "maximum": 10,
             "name": "limit",
             "required": false,
             "type": "integer"
@@ -654,7 +1086,12 @@
           "200": {
             "description": "The content of PO in JSON format",
             "schema": {
-              "$ref": "#/definitions/ReportSchema"
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/ReportSchema"
+                }
+              },
+              "type": "object"
             }
           },
           "400": {
@@ -803,104 +1240,99 @@
       "type": "object"
     },
     "PoSchema": {
-      "type": "object",
       "properties": {
-        "data": {
-          "properties": {
-            "clientId": {
-              "example": "Client237196",
-              "type": "string"
-            },
-            "clientName": {
-              "example": "Client Name",
-              "type": "string"
-            },
-            "createdDate": {
-              "example": "2018-01-20T07:43:00Z",
-              "format": "date",
-              "type": "string"
-            },
-            "deliveryDate": {
-              "example": "2018-01-20T07:43:00Z",
-              "format": "date",
-              "type": "string"
-            },
-            "factoryId": {
-              "example": "Factory237196",
-              "type": "string"
-            },
-            "factoryName": {
-              "example": "Factory Name",
-              "type": "string"
-            },
-            "opoNumber": {
-              "example": "OPO Number",
-              "type": "string"
-            },
-            "poNumber": {
-              "example": "PO Number",
-              "type": "string"
-            },
-            "productLineId": {
-              "example": "12345",
-              "type": "string"
-            },
-            "productLineName": {
-              "example": "Footwear",
-              "type": "string"
-            },
-            "styles": {
-              "items": {
-                "properties": {
-                  "assortments": {
-                    "items": {
-                      "$ref": "#/definitions/AssortmentSchema"
-                    },
-                    "type": "array"
-                  },
-                  "productCategoryId": {
-                    "example": "123456",
-                    "type": "string"
-                  },
-                  "solids": {
-                    "items": {
-                      "$ref": "#/definitions/SolidSchema"
-                    },
-                    "type": "array"
-                  },
-                  "ratio": {
-                    "$ref": "#/definitions/RatioSchema"
-                  },
-                  "styleDescription": {
-                    "example": "237196FFFFF",
-                    "type": "string"
-                  },
-                  "styleId": {
-                    "example": "237196FFFFF",
-                    "type": "string"
-                  }
+        "clientId": {
+          "example": "Client237196",
+          "type": "string"
+        },
+        "clientName": {
+          "example": "Client Name",
+          "type": "string"
+        },
+        "createdDate": {
+          "example": "2018-01-20T07:43:00Z",
+          "format": "date",
+          "type": "string"
+        },
+        "deliveryDate": {
+          "example": "2018-01-20T07:43:00Z",
+          "format": "date",
+          "type": "string"
+        },
+        "factoryId": {
+          "example": "Factory237196",
+          "type": "string"
+        },
+        "factoryName": {
+          "example": "Factory Name",
+          "type": "string"
+        },
+        "opoNumber": {
+          "example": "OPO Number",
+          "type": "string"
+        },
+        "poNumber": {
+          "example": "PO Number",
+          "type": "string"
+        },
+        "productLineId": {
+          "example": "12345",
+          "type": "string"
+        },
+        "productLineName": {
+          "example": "Footwear",
+          "type": "string"
+        },
+        "styles": {
+          "items": {
+            "properties": {
+              "assortments": {
+                "items": {
+                  "$ref": "#/definitions/AssortmentSchema"
                 },
-                "type": "object"
+                "type": "array"
               },
-              "type": "array"
+              "productCategoryId": {
+                "example": "123456",
+                "type": "string"
+              },
+              "solids": {
+                "items": {
+                  "$ref": "#/definitions/SolidSchema"
+                },
+                "type": "array"
+              },
+              "ratio": {
+                "$ref": "#/definitions/RatioSchema"
+              },
+              "styleDescription": {
+                "example": "237196FFFFF",
+                "type": "string"
+              },
+              "styleId": {
+                "example": "237196FFFFF",
+                "type": "string"
+              }
             },
-            "updatedDate": {
-              "example": "2018-01-20T07:43:00Z",
-              "format": "date",
-              "type": "string"
-            },
-            "vendorId": {
-              "example": "Vendor237196",
-              "type": "string"
-            },
-            "vendorName": {
-              "example": "Vendor Name",
-              "type": "string"
-            }
+            "type": "object"
           },
-          "type": "object"
+          "type": "array"
+        },
+        "updatedDate": {
+          "example": "2018-01-20T07:43:00Z",
+          "format": "date",
+          "type": "string"
+        },
+        "vendorId": {
+          "example": "Vendor237196",
+          "type": "string"
+        },
+        "vendorName": {
+          "example": "Vendor Name",
+          "type": "string"
         }
-      }
+      },
+      "type": "object"
     },
     "AssortmentSchema": {
       "properties": {
@@ -1008,6 +1440,858 @@
         }
       },
       "type": "object"
+    },
+    "NewPomSchema": {
+      "properties": {
+        "measurements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "example": "A16S.R"
+              },
+              "codeName": {
+                "type": "string",
+                "example": "NK WDTH SEAM"
+              },
+              "sizes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "measurement": {
+                      "type": "integer",
+                      "example": 9
+                    },
+                    "size": {
+                      "type": "string",
+                      "example": "XS"
+                    }
+                  }
+                }
+              },
+              "tolerance": {
+                "type": "integer",
+                "example": 0.5
+              },
+              "unit": {
+                "type": "string",
+                "example": "inch"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "measurements"
+      ],
+      "type": "object"
+    },
+    "PomSchema": {
+      "properties": {
+        "code": {
+          "type": "string",
+          "example": "A16S.R"
+        },
+        "codeName": {
+          "type": "string",
+          "example": "NK WDTH SEAM"
+        },
+        "sizes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "measurement": {
+                "type": "integer",
+                "example": 9
+              },
+              "size": {
+                "type": "string",
+                "example": "XS"
+              }
+            }
+          }
+        },
+        "tolerance": {
+          "type": "integer",
+          "example": 0.5
+        },
+        "unit": {
+          "type": "string",
+          "example": "inch"
+        }
+      },
+      "type": "object"
+    },
+    "AssignmentSchema": {
+      "type": "object",
+      "properties": {
+        "summaryResult": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "children": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "includeInReport": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "group_id"
+                    },
+                    "label": {
+                      "type": "string",
+                      "example": "Check In"
+                    }
+                  }
+                }
+              },
+              "type": {
+                "type": "string",
+                "example": "inspectionResult"
+              },
+              "id": {
+                "type": "string",
+                "example": "inspectionResult"
+              },
+              "label": {
+                "type": "string",
+                "example": "Inspection Result"
+              }
+            }
+          }
+        },
+        "inspectorName": {
+          "type": "string",
+          "example": "inspector 1"
+        },
+        "fromOrganizationName": {
+          "type": "string",
+          "example": "Inspectorio Retailer"
+        },
+        "measurementChart": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "styleName": {
+                "type": "string",
+                "example": "T10"
+              },
+              "size": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "X"
+                    }
+                  }
+                }
+              },
+              "standard": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "metric": {
+                      "type": "string",
+                      "example": "12"
+                    },
+                    "tolerance": {
+                      "type": "string",
+                      "example": "22"
+                    },
+                    "spec": {
+                      "type": "object",
+                      "properties": {
+                        "2": {
+                          "type": "string",
+                          "example": "2"
+                        },
+                        "X": {
+                          "type": "string",
+                          "example": "2"
+                        }
+                      }
+                    },
+                    "unit": {
+                      "type": "string",
+                      "example": "cm"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "assignmentId": {
+          "type": "string",
+          "example": "assignment_id"
+        },
+        "inspectionId": {
+          "type": "string",
+          "example": "inspection_id"
+        },
+        "sharedOrganizations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "shared_org_id"
+          }
+        },
+        "fromOrganizationId": {
+          "type": "string",
+          "example": "from_org_id"
+        },
+        "inspectionInformation": {
+          "type": "object",
+          "properties": {
+            "expectedDate": {
+              "type": "object",
+              "properties": {
+                "inspectionDate": {
+                  "type": "integer",
+                  "example": 1526601600000
+                }
+              }
+            },
+            "status": {
+              "type": "string",
+              "example": "NEW"
+            },
+            "caseNumber": {
+              "type": "string",
+              "example": "case_number"
+            },
+            "bookingId": {
+              "type": "string",
+              "example": "booking_id"
+            },
+            "pos": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "poTypeName": {
+                    "type": "string",
+                    "example": "Replenishment"
+                  },
+                  "deliveryDate": {
+                    "type": "integer",
+                    "example": 1525564800000
+                  },
+                  "opoNumber": {
+                    "type": "string",
+                    "example": "opo_number"
+                  },
+                  "poNumber": {
+                    "type": "string",
+                    "example": "PO1234"
+                  },
+                  "poId": {
+                    "type": "string",
+                    "example": "po_id"
+                  }
+                }
+              }
+            },
+            "descriptionGroup": {
+              "type": "object"
+            },
+            "whoCreated": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "sample@email.com"
+                },
+                "id": {
+                  "type": "integer",
+                  "example": 2770
+                },
+                "email": {
+                  "type": "string",
+                  "example": "sample@email.com"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "admin"
+                },
+                "uuid": {
+                  "type": "string",
+                  "example": "uuid"
+                }
+              }
+            },
+            "poIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "example": "po_id"
+              }
+            },
+            "fromOrganizationName": {
+              "type": "string",
+              "example": "Inspectorio Retailer"
+            },
+            "supplierVendorInformation": {
+              "type": "object",
+              "properties": {
+                "organizationId": {
+                  "type": "string",
+                  "example": "vendor_id"
+                },
+                "customId": {
+                  "type": "string",
+                  "example": "custom_id"
+                },
+                "contact": {
+                  "type": "object",
+                  "properties": {
+                    "mobileNumber": {
+                      "type": "string",
+                      "default": "",
+                      "example": "0123456789"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "sample@email.com"
+                    }
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Supplier Name"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "sample address"
+                }
+              }
+            },
+            "productCategory": {
+              "type": "string",
+              "example": "Slippers"
+            },
+            "bookingFormVersion": {
+              "type": "string",
+              "example": "booking_form_id"
+            },
+            "fromOrganizationId": {
+              "type": "string",
+              "example": "org_id"
+            },
+            "brandRetailerInformation": {
+              "type": "object",
+              "properties": {
+                "organizationId": {
+                  "type": "string",
+                  "example": "org_id"
+                },
+                "contact": {
+                  "type": "object",
+                  "properties": {
+                    "mobileNumber": {
+                      "type": "string",
+                      "example": "0123456789"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "sample@email.com"
+                    }
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Inspectorio Retailer"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "address"
+                }
+              }
+            },
+            "inspectionInformation": {
+              "type": "object",
+              "properties": {
+                "typeOfInspectionName": {
+                  "type": "string",
+                  "example": "During Production"
+                },
+                "typeOfInspection": {
+                  "type": "string",
+                  "example": "DUPRO"
+                }
+              }
+            },
+            "confirmedBy": {
+              "type": "string",
+              "example": "sample name"
+            },
+            "autoAssign": {
+              "type": "string",
+              "example": "office"
+            },
+            "factoryInformation": {
+              "type": "object",
+              "properties": {
+                "organizationId": {
+                  "type": "string",
+                  "example": "org_id"
+                },
+                "contact": {
+                  "$id": "/properties/inspectionInformation/properties/factoryInformation/properties/contact",
+                  "type": "object",
+                  "properties": {
+                    "mobileNumber": {
+                      "type": "string",
+                      "example": "0123456789"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "sample@email.com"
+                    }
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "example": "sample factory name"
+                }
+              }
+            },
+            "detailOfPIPO": {
+              "type": "object",
+              "properties": {
+                "styles": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "productCategoryName": {
+                        "type": "string",
+                        "example": "Slippers"
+                      },
+                      "measurements": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "codeName": {
+                              "type": "string",
+                              "example": "12"
+                            },
+                            "tolerance": {
+                              "type": "string",
+                              "example": "22"
+                            },
+                            "unit": {
+                              "type": "string",
+                              "example": "cm"
+                            },
+                            "sizes": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "measurement": {
+                                    "type": "string",
+                                    "title": "The Measurement Schema ",
+                                    "example": "2"
+                                  },
+                                  "size": {
+                                    "type": "string",
+                                    "example": "2"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "solidDetail": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "casePackQuantity": {
+                              "type": "string",
+                              "example": "1"
+                            },
+                            "color": {
+                              "type": "string",
+                              "example": "Red"
+                            },
+                            "orderCartonQuantity": {
+                              "type": "integer",
+                              "example": 12
+                            },
+                            "availableQuantity": {
+                              "type": "integer",
+                              "example": 12
+                            },
+                            "orderQuantity": {
+                              "type": "integer",
+                              "example": 12
+                            },
+                            "availableCartonQuantity": {
+                              "type": "integer",
+                              "example": 12
+                            },
+                            "id": {
+                              "type": "string",
+                              "example": "item01"
+                            },
+                            "size": {
+                              "type": "string",
+                              "example": "X"
+                            }
+                          }
+                        }
+                      },
+                      "assortmentDetail": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "availableCartonQuantity": {
+                              "type": "string",
+                              "example": "22"
+                            },
+                            "assortmentConfiguration": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "color": {
+                                    "type": "string",
+                                    "example": "2"
+                                  },
+                                  "availableQuantity": {
+                                    "type": "integer",
+                                    "example": 22
+                                  },
+                                  "orderQuantity": {
+                                    "type": "integer",
+                                    "example": 222
+                                  },
+                                  "configurationQuantity": {
+                                    "type": "string",
+                                    "example": "1"
+                                  },
+                                  "id": {
+                                    "type": "string",
+                                    "example": "2"
+                                  },
+                                  "size": {
+                                    "type": "string",
+                                    "example": "2"
+                                  }
+                                }
+                              }
+                            },
+                            "assortmentId": {
+                              "type": "string",
+                              "example": "2222"
+                            },
+                            "orderCartonQuantity": {
+                              "type": "string",
+                              "example": "222"
+                            }
+                          }
+                        }
+                      },
+                      "productCategory": {
+                        "type": "string",
+                        "example": "117203"
+                      },
+                      "productDescription": {
+                        "type": "string",
+                        "example": "style descriptions 1"
+                      },
+                      "styleId": {
+                        "type": "string",
+                        "example": "style_id"
+                      },
+                      "styleName": {
+                        "type": "string",
+                        "example": "T10"
+                      }
+                    }
+                  }
+                },
+                "pipoInformation": {
+                  "type": "object",
+                  "properties": {
+                    "poNumber": {
+                      "type": "string",
+                      "example": "POI234"
+                    },
+                    "productLine": {
+                      "type": "string",
+                      "example": "549"
+                    },
+                    "productLineName": {
+                      "type": "string",
+                      "example": "FOOTWEAR"
+                    }
+                  }
+                },
+                "isHaveStyleFromPool": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            },
+            "caseId": {
+              "type": "string",
+              "example": "1525837348"
+            },
+            "createTime": {
+              "type": "integer",
+              "example": 1525837348045
+            },
+            "updatedTime": {
+              "type": "integer",
+              "example": 1525837348045
+            },
+            "organizationId": {
+              "type": "string",
+              "example": "org_id"
+            },
+            "toOrganizationName": {
+              "type": "string",
+              "example": "Inspectorio Retailer"
+            },
+            "toOrganizationId": {
+              "type": "string",
+              "example": "org_id"
+            },
+            "poTypeObjs": {
+              "type": "array"
+            },
+            "remarkGroup": {
+              "type": "object",
+              "properties": {
+                "remark": {
+                  "type": "string",
+                  "example": "s"
+                }
+              }
+            },
+            "bookingIds": {
+              "type": "array"
+            }
+          }
+        },
+        "trashedCustomResponseList": {
+          "type": "array"
+        },
+        "status": {
+          "type": "string",
+          "example": "IN-PROGRESS"
+        },
+        "workflowId": {
+          "type": "string",
+          "example": "workflow_id"
+        },
+        "updatedByUserId": {
+          "type": "integer",
+          "default": 0,
+          "example": 1
+        },
+        "lastStatus": {
+          "type": "string",
+          "example": "PRE-ASSIGNED"
+        },
+        "generalInformationTemplate": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "group"
+              },
+              "children": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "active": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "dataName": {
+                      "type": "string",
+                      "example": "unitType"
+                    }
+                  }
+                }
+              },
+              "label": {
+                "type": "string",
+                "example": "Inspection Information"
+              }
+            }
+          }
+        },
+        "trashedQuestions": {
+          "type": "array"
+        },
+        "updatedTime": {
+          "type": "integer",
+          "example": 1527143692081
+        },
+        "updatedByUserName": {
+          "type": "string",
+          "example": "sample user name"
+        },
+        "toOrganizationId": {
+          "type": "string",
+          "example": "org_id"
+        },
+        "customResponseList": {
+          "type": "array"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "groups": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "category": {
+                      "type": "string",
+                      "example": "questions"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "questionType": {
+                            "type": "string",
+                            "example": "yes_no"
+                          },
+                          "itemId": {
+                            "type": "string",
+                            "example": "item_id"
+                          },
+                          "isRoot": {
+                            "type": "boolean",
+                            "example": true
+                          },
+                          "assignmentId": {
+                            "type": "string",
+                            "example": "assignment_id"
+                          },
+                          "label": {
+                            "type": "string",
+                            "example": "Were you denied access to the factory?"
+                          },
+                          "isCustomType": {
+                            "type": "boolean",
+                            "example": false
+                          },
+                          "groupId": {
+                            "type": "string",
+                            "example": "group_id"
+                          },
+                          "id": {
+                            "type": "string",
+                            "example": "id"
+                          },
+                          "type": {
+                            "type": "string",
+                            "example": "question"
+                          },
+                          "options": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "value": {
+                                  "type": "string",
+                                  "example": "YES"
+                                },
+                                "failResponse": {
+                                  "type": "boolean",
+                                  "example": true
+                                },
+                                "actions": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "action": {
+                                        "type": "string",
+                                        "example": "add_description"
+                                      }
+                                    }
+                                  }
+                                },
+                                "id": {
+                                  "type": "string",
+                                  "example": "chk__13"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "type": {
+                      "type": "string",
+                      "example": "customGroup"
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "group_id"
+                    },
+                    "label": {
+                      "type": "string",
+                      "example": "Check In"
+                    }
+                  }
+                }
+              },
+              "label": {
+                "type": "string",
+                "example": "Check In 2"
+              }
+            }
+          }
+        },
+        "workflowName": {
+          "type": "string",
+          "example": "FRI Target"
+        },
+        "createdTime": {
+          "type": "integer",
+          "example": 1527051258925
+        },
+        "ownerId": {
+          "type": "string",
+          "example": "org_id"
+        },
+        "inspectorId": {
+          "type": "string",
+          "example": "2844"
+        }
+      }
     },
     "ReportSchema": {
       "type": "object",
@@ -2315,6 +3599,15 @@
     },
     {
       "name": "POs"
+    },
+    {
+      "name": "Measurements"
+    },
+    {
+      "name": "Assignments"
+    },
+    {
+      "name": "Reports"
     }
   ]
 }
