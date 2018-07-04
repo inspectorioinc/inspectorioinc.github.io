@@ -1,0 +1,453 @@
+openapi: 3.0.0
+info:
+  title: Inspection API
+  description: >
+    The Inspection API allows for _listing_ and _filtering_ inspections done
+    through Inspectorio. An inspection object contains the information about the
+    client, executor, factory and supplier involved in the inspection. It also
+    contains information related to the product orders that are being inspected.
+  version: 0.2.0
+servers:
+  - url: 'https://{environment}.inspectorio.com/api/v1'
+    variables:
+      environment:
+        description: Choose production or test environment.
+        default: stag.saas
+        enum:
+          - api-target-prod
+          - api-target-staging
+security:
+  - x-token: []
+paths:
+  /inspections:
+    get:
+      description: List and filter inspections
+      tags:
+        - Inspection
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - name: order
+          in: query
+          required: false
+          description: >
+            The property use for ordering. Use `+` or `-` for ascensding and
+            descending ordering respectively.
+          schema:
+            type: string
+            enum:
+              - id
+              - created_at
+              - completed_on
+              - expected_on
+              - factory_id
+              - product_category
+            default: +id
+        - name: result
+          in: query
+          required: false
+          description: Filter inspections per result
+          schema:
+            type: string
+            enum:
+              - fail
+              - pass
+              - non-applicable
+        - name: status
+          in: query
+          required: false
+          description: Filter inspections per status
+          schema:
+            type: string
+            enum:
+              - re-inspect
+              - in-progress
+              - approved
+              - completed
+              - rejected
+        - name: product_order
+          in: query
+          required: false
+          description: The product orders we want the inspection from.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: completed_from
+          in: query
+          required: false
+          description: >
+            The inspections that has been completed from the given date
+            (inclusive)
+          schema:
+            type: string
+            format: date
+        - name: completed_to
+          in: query
+          required: false
+          description: |
+            The inspections that has been completed at the given date (exlusive)
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: The inspections list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Inspection'
+        '401':
+          description: Unauthorized error. Please use the bearer token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: >
+            Unprocessable entity. Please be sure that the given query parameters
+            are supported.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/inspections/{inspection_id}':
+    parameters:
+      - name: inspection_id
+        in: path
+        schema:
+          type: string
+        description: The Inspection id
+        required: true
+    get:
+      description: Show an Inspection
+      tags:
+        - Inspection
+      responses:
+        '200':
+          description: The Inspection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inspection'
+        '401':
+          description: Unauthorized error. Please use the bearer token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Inspection not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/inspections/{inspection_id}/result':
+    parameters:
+      - name: inspection_id
+        in: path
+        schema:
+          type: string
+        description: The Inspection id
+        required: true
+    get:
+      description: Show the inspection result
+      tags:
+        - Inspection
+      responses:
+        '200':
+          description: The Inspection result
+          content:
+            application/json:
+              schema:
+                type: object
+                description: __TBD__
+        '401':
+          description: Unauthorized error. Please use the bearer token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Inspection Result not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Please provide your JWT token
+  parameters:
+    organizationId:
+      name: organization_id
+      in: path
+      schema:
+        type: string
+      required: true
+      description: The organization id
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        maximum: 1000
+        default: 100
+      required: false
+      description: The number of items to return
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        default: 0
+      required: false
+      description: The number of items to skip before collecting the result list
+  schemas:
+    Inspection:
+      type: object
+      required:
+        - id
+        - status
+      properties:
+        id:
+          type: string
+          description: This inspection uniq id
+        organization_id:
+          type: string
+          description: Id of the organization which owns/initiated this inspection
+        to_organization_id:
+          type: string
+        inspector:
+          $ref: '#/components/schemas/Person'
+          description: Information of inspector that conduct the inspection.
+        creator:
+          $ref: '#/components/schemas/Person'
+          description: The person that created/booked the inspection.
+        created_at:
+          type: string
+          format: date-time
+          description: (Timestamp) Date and time at which this inspection has been created
+        updated_at:
+          type: string
+          format: date-time
+          description: >-
+            (Timestamp) Date and time at which this inspection has been last
+            updated
+        total_quantity:
+          type: integer
+          minimum: 0
+        completed_on:
+          type: string
+          format: date
+          description: The date at which the inspection took place
+        expected_on:
+          type: string
+          format: date
+          description: The date at which the inspection is expected to took place
+        result:
+          type: string
+          description: Summary result of the inspection
+          enum:
+            - fail
+            - pass
+            - non-applicable
+          default: Non-applicable
+        status:
+          type: string
+          enum:
+            - re-inspect
+            - in-progress
+            - approved
+            - completed
+            - rejected
+          description: The current status of the inspection
+          default: in-progress
+        type:
+          type: object
+          description: Type of inspection
+          properties:
+            code:
+              type: string
+              example: DUPRO
+            name:
+              type: string
+              example: During production inspection
+        case_number:
+          type: string
+          description: Case number used for the inspection
+          example: >-
+            DUPRO72AF17-POL MC CUEOXF CAH ESS S17,POL MC CUEOXF CAH ESS
+            C11Garments and ApparelBoot,ACME
+        product_categories:
+          type: array
+          items:
+            type: string
+          example:
+            - '123'
+            - '456'
+        product_line:
+          type: string
+          example: 1234
+        product_styles:
+          description: >
+            The product styles that are part of this inspection, including their
+            `Measurement`.
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductStyle'
+        product_orders:
+          type: array
+          description: |
+            The product orders (PO) that are part of this inspection.
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 123
+              href:
+                type: string
+                format: url
+                example: /product_orders/123
+              rel:
+                type: string
+                default: self
+                enum:
+                  - self
+        executor:
+          description: >
+            The organization that conduct the inspection. It's usually the same
+            as the organization owner, but we also support thrid party
+            inspection organizations. See __Organization__ model.
+          allOf:
+            - $ref: '#/components/schemas/Organization'
+        supplier:
+          $ref: '#/components/schemas/Organization'
+        client:
+          $ref: '#/components/schemas/Organization'
+        factory:
+          $ref: '#/components/schemas/Organization'
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          example: Acme
+        address:
+          type: string
+          example: '221B baker st., London, UK'
+        contact:
+          $ref: '#/components/schemas/Person'
+    Person:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: johndoe@example.com
+        mobile_number:
+          type: string
+          format: phone
+          example: '+844242424242'
+    ProductStyle:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        product_category:
+          $ref: '#/components/schemas/ProductCategory'
+        product_description:
+          type: string
+        measurements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Measurement'
+    ProductCategory:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    Measurement:
+      type: object
+      properties:
+        code:
+          type: string
+          example: B45
+        code_name:
+          type: string
+          example: BRA CF HEIGHT
+        description:
+          type: string
+        tolerance:
+          type: number
+          example: 2.5
+        unit:
+          type: string
+          enum:
+            - inch
+            - centimeter
+            - millimeter
+          example: inch
+        sizes:
+          type: array
+          items:
+            type: object
+            properties:
+              measurement:
+                type: number
+                example: 4.5
+              size:
+                type: string
+                example: S
+    Error:
+      description: Api error information
+      type: object
+      required:
+        - message
+        - code
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        metadata:
+          type: object
+          description: Optional error metadata

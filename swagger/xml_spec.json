@@ -1030,7 +1030,7 @@
                 },
                 "data": {
                   "items": {
-                    "$ref": "#/definitions/ReportListSchema"
+                    "$ref": "#/definitions/InspectionSchema"
                   },
                   "type": "array"
                 },
@@ -1813,699 +1813,873 @@
         }
       }
     },
-    "ReportListSchema": {
+    "InspectionSchema": {
       "type": "object",
       "properties": {
-    "caseNumber": {
-      "type": "string"
-    },
-    "client": {
-      "properties": {
-        "contact": {
+        "assignmentId": {
+          "type": "string",
+          "example": "aab3c866-b9d3-4e69-a127-143a38fe84f4"
+        },
+        "car": {
+          "type": "boolean",
+          "example": false
+        },
+        "caseNumber": {
+          "type": "string",
+          "example": "SampleCaseNumber"
+        },
+        "clientId": {
+          "type": "string",
+          "example": "252437"
+        },
+        "country": {
+          "type": "string",
+          "example": "-"
+        },
+        "createdDate": {
+          "example": "2018-01-20T07:43:00Z",
+          "type": "string"
+        },
+        "factoryId": {
+          "type": "string",
+          "example": "293187"
+        },
+        "inspectionDate": {
+          "example": "2018-01-20T07:43:00Z",
+          "type": "string"
+        },
+        "inspectionId": {
+          "type": "string",
+          "example": "inspection_id"
+        },
+        "inspectionInformation": {
+          "$ref": "#/definitions/BookingSchema"
+        },
+        "inspectionResult": {
+          "type": "string",
+          "example": "pass"
+        },
+        "inspectionLocationAddress": {
+          "type": "object",
           "properties": {
-            "contactId": {
-              "type": "string"
+            "inspectionCity": {
+              "type": "string",
+              "example": "Villa Nueva"
             },
-            "email": {
-              "type": "string"
-            },
-            "mobileNumber": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
+            "inspectionCountry": {
+              "type": "string",
+              "example": "Guatemala"
             }
-          },
-          "type": "object"
-        },
-        "orgAddress": {
-          "type": "string"
-        },
-        "orgId": {
-          "type": "string"
-        },
-        "orgName": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "country": {
-      "type": "string"
-    },
-    "createdDate": {
-      "type": "string",
-      "example": "2018-01-20T07:43:00Z"
-    },
-    "creator": {
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "executor": {
-      "properties": {
-        "country": {
-          "type": "string"
-        },
-        "orgAddress": {
-          "type": "string"
-        },
-        "orgId": {
-          "type": "string"
-        },
-        "orgName": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "expectedDate": {
-      "type": "string",
-      "example": "2018-01-20T07:43:00Z"
-    },
-    "factory": {
-      "properties": {
-        "contact": {
-          "properties": {
-            "contactId": {
-              "type": "string"
-            },
-            "email": {
-              "type": "string"
-            },
-            "mobileNumber": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
-        "country": {
-          "type": "string"
-        },
-        "orgAddress": {
-          "type": "string"
-        },
-        "orgId": {
-          "type": "string"
-        },
-        "orgName": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "inspectionDate": {
-      "type": "string",
-      "example": "2018-01-20T07:43:00Z"
-    },
-    "inspectionId": {
-      "type": "string"
-    },
-    "inspectionResult": {
-      "type": "string"
-    },
-    "inspector": {
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "mobileNumber": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "organization": {
-      "properties": {
-        "country": {
-          "type": "string"
-        },
-        "orgAddress": {
-          "type": "string"
-        },
-        "orgId": {
-          "type": "string"
-        },
-        "orgName": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "productCategories": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "productLine": {
-      "type": "string"
-    },
-    "productOrders": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
           }
-        }
-      }
-    },
-    "productStyles": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "assortments": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "assortmentConfiguration": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "availableQuantity": {
-                        "type": "number"
-                      },
-                      "color": {
-                        "type": "string"
-                      },
-                      "configurationQuantity": {
-                        "type": "number"
-                      },
-                      "id": {
-                        "type": "string"
-                      },
-                      "orderQuantity": {
-                        "type": "number"
-                      },
-                      "size": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "assortmentId": {
-                  "type": "string"
-                },
-                "availableCartonQuantity": {
-                  "type": "number"
-                },
-                "orderCartonQuantity": {
-                  "type": "number"
-                }
-              }
-            }
-          },
-          "measurements": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "string"
-                },
-                "code_name": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "sizes": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "measurement": {
-                        "type": "string"
-                      },
-                      "size": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "tolerance": {
-                  "type": "number"
-                },
-                "unit": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "productCategory": {
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              }
-            },
-            "type": "object"
-          },
-          "solids": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "availableQuantity": {
-                  "type": "number"
-                },
-                "color": {
-                  "type": "string"
-                },
-                "id": {
-                  "type": "string"
-                },
-                "orderQuantity": {
-                  "type": "number"
-                },
-                "size": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "styleId": {
-            "type": "string"
+        },
+        "inspectorId": {
+          "type": "string",
+          "example": "2627"
+        },
+        "inspectorName": {
+          "type": "string",
+          "example": "Sample Name"
+        },
+        "updatedDate": {
+          "example": "2018-01-20T07:43:00Z",
+          "type": "string"
+        },
+        "organizationId": {
+          "type": "string",
+          "example": "org_id"
+        },
+        "productCategories": {
+          "type": "string",
+          "example": "117011"
+        },
+        "productLine": {
+          "type": "string",
+          "example": "540"
+        },
+        "sharedOrganizations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "org_id"
           }
+        },
+        "status": {
+          "type": "string",
+          "example": "completed"
+        },
+        "vendorId": {
+          "type": "string",
+          "example": "vendor_id"
+        },
+        "toOrganizationId": {
+          "type": "string",
+          "example": "to_org_id"
+        },
+        "typeOfInspection": {
+          "type": "string",
+          "example": "DUPRO"
         }
       }
-    },
-    "status": {
-      "type": "string"
-    },
-    "vendor": {
-      "properties": {
-        "contact": {
-          "properties": {
-            "contactId": {
-              "type": "string"
-            },
-            "email": {
-              "type": "string"
-            },
-            "mobileNumber": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
-        "orgAddress": {
-          "type": "string"
-        },
-        "orgId": {
-          "type": "string"
-        },
-        "orgName": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "type": {
-      "properties": {
-        "code": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "updatedDate": {
-      "type": "string",
-      "example": "2018-01-20T07:43:00Z"
-    }
-  }
     },
     "ReportSchema": {
       "type": "object",
       "properties": {
-    "caseNumber": {
-      "type": "string"
-    },
-    "client": {
-      "properties": {
-        "contact": {
-          "properties": {
-            "contactId": {
-              "type": "string"
-            },
-            "email": {
-              "type": "string"
-            },
-            "mobileNumber": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
-        "orgAddress": {
-          "type": "string"
-        },
-        "orgId": {
-          "type": "string"
-        },
-        "orgName": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "country": {
-      "type": "string"
-    },
-    "createdDate": {
-      "type": "string",
-      "example": "2018-01-20T07:43:00Z"
-    },
-    "creator": {
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "executor": {
-      "properties": {
-        "country": {
-          "type": "string"
-        },
-        "orgAddress": {
-          "type": "string"
-        },
-        "orgId": {
-          "type": "string"
-        },
-        "orgName": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "expectedDate": {
-      "type": "string",
-      "example": "2018-01-20T07:43:00Z"
-    },
-    "factory": {
-      "properties": {
-        "contact": {
-          "properties": {
-            "contactId": {
-              "type": "string"
-            },
-            "email": {
-              "type": "string"
-            },
-            "mobileNumber": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
-        "country": {
-          "type": "string"
-        },
-        "orgAddress": {
-          "type": "string"
-        },
-        "orgId": {
-          "type": "string"
-        },
-        "orgName": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "inspectionDate": {
-      "type": "string",
-      "example": "2018-01-20T07:43:00Z"
-    },
-    "inspectionId": {
-      "type": "string"
-    },
-    "inspectionResult": {
-      "type": "string"
-    },
-    "inspector": {
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "mobileNumber": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "organization": {
-      "properties": {
-        "country": {
-          "type": "string"
-        },
-        "orgAddress": {
-          "type": "string"
-        },
-        "orgId": {
-          "type": "string"
-        },
-        "orgName": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "productCategories": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "productLine": {
-      "type": "string"
-    },
-    "productOrders": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "productStyles": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "assortments": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "assortmentConfiguration": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "availableQuantity": {
-                        "type": "number"
-                      },
-                      "color": {
-                        "type": "string"
-                      },
-                      "configurationQuantity": {
-                        "type": "number"
-                      },
-                      "id": {
-                        "type": "string"
-                      },
-                      "orderQuantity": {
-                        "type": "number"
-                      },
-                      "size": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "assortmentId": {
-                  "type": "string"
-                },
-                "availableCartonQuantity": {
-                  "type": "number"
-                },
-                "orderCartonQuantity": {
-                  "type": "number"
-                }
-              }
-            }
-          },
-          "measurements": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "string"
-                },
-                "code_name": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "sizes": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "measurement": {
-                        "type": "string"
-                      },
-                      "size": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "tolerance": {
-                  "type": "number"
-                },
-                "unit": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "productCategory": {
+        "inspectionDefectList": {
+          "type": "array",
+          "items": {
+            "type": "object",
             "properties": {
-              "id": {
+              "assortmentId": {
+                "type": "string",
+                "example": "-"
+              },
+              "clarification": {
+                "type": "string",
+                "example": "Major"
+              },
+              "color": {
+                "type": "string",
+                "example": "EBONY"
+              },
+              "defectCategory": {
+                "type": "string",
+                "example": "Construction"
+              },
+              "defectCode": {
+                "type": "string",
+                "example": "CON004"
+              },
+              "defectId": {
+                "type": "string",
+                "example": "aab3c866-b9d3-4e69-a127-143a38fe84f4_workmanship_0"
+              },
+              "defectName": {
+                "type": "string",
+                "example": "CON004 - Major Construction defects"
+              },
+              "description": {
+                "type": "string",
+                "example": "CON004 - Major Construction defects."
+              },
+              "group": {
+                "type": "string",
+                "example": "workmanship"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "item": {
+                "type": "string",
+                "example": "331-11-0152"
+              },
+              "itemDescription": {
+                "type": "string",
+                "example": "workmanship"
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "293414"
+              },
+              "photos": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string",
+                      "example": "-"
+                    },
+                    "rotateAngle": {
+                      "type": "string",
+                      "example": "0"
+                    },
+                    "source": {
+                      "type": "string",
+                      "example": "https://s3.amazonaws.com/image.jpg"
+                    }
+                  }
+                }
+              },
+              "productCategory": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "117011"
+                }
+              },
+              "size": {
+                "type": "string",
+                "example": "S"
+              },
+              "style": {
+                "type": "string",
+                "example": "00548337"
+              },
+              "totalDefects": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          }
+        },
+        "inspectionGeneral": {
+          "items": {
+            "type": "object",
+            "properties": {
+              "assignmentId": {
+                "type": "string",
+                "example": "aab3c866-b9d3-4e69-a127-143a38fe84f4"
+              },
+              "car": {
+                "type": "boolean",
+                "example": false
+              },
+              "caseNumber": {
+                "type": "string",
+                "example": "SampleCaseNumber"
+              },
+              "clientId": {
+                "type": "string",
+                "example": "252437"
+              },
+              "country": {
+                "type": "string",
+                "example": "-"
+              },
+              "createdDate": {
+                "example": "2018-01-20T07:43:00Z",
                 "type": "string"
               },
-              "name": {
+              "factoryId": {
+                "type": "string",
+                "example": "293187"
+              },
+              "inspectionDate": {
+                "example": "2018-01-20T07:43:00Z",
                 "type": "string"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "inspectionInformation": {
+                "$ref": "#/definitions/BookingSchema"
+              },
+              "inspectionResult": {
+                "type": "string",
+                "example": "pass"
+              },
+              "inspectorId": {
+                "type": "string",
+                "example": "2627"
+              },
+              "inspectorName": {
+                "type": "string",
+                "example": "Sample Name"
+              },
+              "updatedDate": {
+                "example": "2018-01-20T07:43:00Z",
+                "type": "string"
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "org_id"
+              },
+              "productCategories": {
+                "type": "string",
+                "example": "117011"
+              },
+              "productLine": {
+                "type": "string",
+                "example": "540"
+              },
+              "status": {
+                "type": "string",
+                "example": "completed"
+              },
+              "vendorId": {
+                "type": "string",
+                "example": "vendor_id"
+              },
+              "toOrganizationId": {
+                "type": "string",
+                "example": "to_org_id"
+              },
+              "typeOfInspection": {
+                "type": "string",
+                "example": "DUPRO"
               }
-            },
-            "type": "object"
+            }
           },
-          "solids": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "availableQuantity": {
-                  "type": "number"
-                },
-                "color": {
-                  "type": "string"
-                },
-                "id": {
-                  "type": "string"
-                },
-                "orderQuantity": {
-                  "type": "number"
-                },
-                "size": {
-                  "type": "string"
+          "type": "array"
+        },
+        "inspectionMeasurementDimensions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "color": {
+                "type": "string",
+                "example": "EBONY"
+              },
+              "dimensionId": {
+                "type": "string",
+                "example": "dimension_id"
+              },
+              "dimensionIndex": {
+                "type": "integer",
+                "example": 8
+              },
+              "id": {
+                "type": "string",
+                "example": "331-11-0154"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "itemId": {
+                "type": "string",
+                "example": "item_id"
+              },
+              "measurementDescription": {
+                "type": "string",
+                "example": "ACRS BK SHLDR"
+              },
+              "occurrences": {
+                "type": "integer",
+                "example": 0
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "org_id"
+              },
+              "samples": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "Sample 1"
+                    },
+                    "value": {
+                      "type": "number",
+                      "example": 23.25
+                    }
+                  }
+                }
+              },
+              "size": {
+                "type": "string",
+                "example": "L"
+              },
+              "skuIndex": {
+                "type": "integer",
+                "example": 3
+              },
+              "standard": {
+                "type": "number",
+                "example": 23.25
+              },
+              "styleName": {
+                "type": "string",
+                "example": "00548337"
+              },
+              "tolerance": {
+                "type": "number",
+                "example": 0.5
+              },
+              "unit": {
+                "type": "string",
+                "example": "inch"
+              }
+            }
+          }
+        },
+        "inspectionPhotos": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "example": "YELLOW SAMPLE & BULK COMPARISON PICTURE. "
+                  },
+                  "fileType": {
+                    "type": "string",
+                    "example": "jpg"
+                  },
+                  "rotateAngle": {
+                    "type": "string",
+                    "example": "0"
+                  },
+                  "source": {
+                    "type": "string",
+                    "example": "https://s3.amazonaws.com/file.jpg"
+                  }
+                }
+              },
+              "groupId": {
+                "type": "string",
+                "example": "group_id"
+              },
+              "inspectionId": {
+                "type": "string",
+                "default": "",
+                "example": "inspection_id"
+              },
+              "itemId": {
+                "type": "string",
+                "example": "item_id"
+              },
+              "label": {
+                "type": "string",
+                "default": "",
+                "example": "Back View"
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "org_id"
+              },
+              "photoId": {
+                "type": "string",
+                "example": "photo_id"
+              },
+              "status": {
+                "type": "string",
+                "example": "n/a"
+              },
+              "style": {
+                "type": "string",
+                "example": "ACK97 DOT"
+              },
+              "type": {
+                "type": "string",
+                "example": "production"
+              }
+            }
+          }
+        },
+        "inspectionQuestions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "groupId": {
+                "type": "string",
+                "example": "e3f7a2f8-7909-4b7b-9565-b1c23891f9b6"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "label": {
+                "type": "string",
+                "example": "Is the product subject to mold / mildew requirements?"
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "actions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "action": {
+                            "type": "string",
+                            "example": "request_picture"
+                          },
+                          "value": {
+                            "type": "string",
+                            "example": "randomly_percentage"
+                          }
+                        }
+                      }
+                    },
+                    "failResponse": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "id": {
+                      "type": "string",
+                      "example": "chk__122"
+                    },
+                    "value": {
+                      "type": "string",
+                      "example": "YES"
+                    }
+                  }
+                }
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "252437"
+              },
+              "questionId": {
+                "type": "string",
+                "example": "aab3c866-b9d3-4e69-a127-143a38fe84f4_340553ad-6461-4a66-be8d-ce4c0e55e8de"
+              },
+              "type": {
+                "type": "string",
+                "example": "yes_no"
+              }
+            }
+          }
+        },
+        "inspectionRFID": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "barcode": {
+                "type": "string",
+                "example": "490760310776"
+              },
+              "code": {
+                "type": "string",
+                "example": "3504AE253002A181A13B9C59"
+              },
+              "decodedCode": {
+                "type": "string",
+                "example": "490760310776"
+              },
+              "id": {
+                "type": "string",
+                "example": "6a018f53-d378-4265-b04a-ddaf62ad65f4-2018-04-19-11-00-053"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "matched": {
+                "type": "boolean",
+                "example": true
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "org_id"
+              },
+              "photos": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "https://s3.amazonaws.com/image.jpg"
                 }
               }
             }
-          },
-          "styleId": {
-            "type": "string"
+          }
+        },
+        "inspectionResult": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "groupName": {
+                "type": "string",
+                "example": "Target PO or Packing List"
+              },
+              "includeInReport": {
+                "type": "boolean",
+                "example": true
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "293414"
+              },
+              "resultId": {
+                "type": "string",
+                "example": "result_id"
+              },
+              "status": {
+                "type": "string",
+                "example": "pass"
+              }
+            }
+          }
+        },
+        "inspectionSampleSelection": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "293414"
+              },
+              "sampleSelection": {
+                "type": "integer",
+                "example": 50
+              },
+              "sampleSize": {
+                "type": "integer",
+                "example": 50
+              },
+              "totalInspectionQuantity": {
+                "type": "integer",
+                "example": 2100
+              }
+            }
+          }
+        },
+        "inspectionSampleSelectionSamples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "assortment": {
+                "type": "string",
+                "example": "solid"
+              },
+              "assortmentQuantity": {
+                "type": "string",
+                "example": "-"
+              },
+              "cartonPull": {
+                "type": "integer",
+                "example": 3
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "item": {
+                "type": "string",
+                "example": "331-11-0151"
+              },
+              "itemOrderQuantity": {
+                "type": "integer",
+                "example": 350
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "293414"
+              },
+              "sampleId": {
+                "type": "string",
+                "example": "sample_id"
+              },
+              "samplePull": {
+                "type": "integer",
+                "example": 9
+              },
+              "style": {
+                "type": "string",
+                "example": "00548337"
+              },
+              "styleOrderQuantity": {
+                "type": "integer",
+                "example": 2100
+              }
+            }
+          }
+        },
+        "inspectionSpecialAttentionPoint": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "attentionId": {
+                "type": "string",
+                "example": "attention_id"
+              },
+              "description": {
+                "type": "string",
+                "example": "djkdkfncnfj"
+              },
+              "group": {
+                "type": "string",
+                "example": "group_id"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "org_id"
+              },
+              "pictures": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rotateAngle": {
+                      "type": "string",
+                      "example": "0"
+                    },
+                    "source": {
+                      "type": "string",
+                      "example": "https://s3.amazonaws.com/file.jpg"
+                    }
+                  }
+                }
+              },
+              "type": {
+                "type": "string",
+                "example": "quality"
+              }
+            }
+          }
+        },
+        "inspectionStandards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "aql": {
+                "type": "object",
+                "properties": {
+                  "aqlId": {
+                    "type": "string",
+                    "example": "aql_id"
+                  },
+                  "aqlName": {
+                    "type": "string",
+                    "example": "Measurement"
+                  },
+                  "critical": {
+                    "type": "string",
+                    "example": "6.5"
+                  },
+                  "major": {
+                    "type": "string",
+                    "example": "6.5"
+                  },
+                  "minor": {
+                    "type": "string",
+                    "example": "6.5"
+                  }
+                }
+              },
+              "availableQuantity": {
+                "type": "integer",
+                "example": 2100
+              },
+              "defectFound": {
+                "type": "object",
+                "properties": {
+                  "critical": {
+                    "type": "integer",
+                    "example": 0
+                  },
+                  "major": {
+                    "type": "integer",
+                    "example": 0
+                  },
+                  "minor": {
+                    "type": "integer",
+                    "example": 0
+                  }
+                }
+              },
+              "determineDesc": {
+                "type": "string",
+                "example": "AQL Standard "
+              },
+              "determineType": {
+                "type": "string",
+                "example": "aqlTable"
+              },
+              "determineValue": {
+                "type": "integer",
+                "example": 0
+              },
+              "failReason": {
+                "type": "string",
+                "example": "-"
+              },
+              "group": {
+                "type": "string",
+                "example": "measurement"
+              },
+              "inspectionId": {
+                "type": "string",
+                "example": "inspection_id"
+              },
+              "maxAllowed": {
+                "type": "object",
+                "properties": {
+                  "critical": {
+                    "type": "integer",
+                    "example": 0
+                  },
+                  "major": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "minor": {
+                    "type": "integer",
+                    "example": 0
+                  }
+                }
+              },
+              "maximumSampleSize": {
+                "type": "integer",
+                "example": 8
+              },
+              "minimumSampleSize": {
+                "type": "integer",
+                "example": 8
+              },
+              "noOfDefectiveItems": {
+                "type": "integer",
+                "example": 0
+              },
+              "noOfDefectiveUnits": {
+                "type": "integer",
+                "example": 0
+              },
+              "organizationId": {
+                "type": "string",
+                "example": "293414"
+              },
+              "packingType": {
+                "type": "string",
+                "example": "Solid"
+              },
+              "sampleSizeCategory": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productCategory": {
+                      "type": "string",
+                      "example": "117011"
+                    },
+                    "sampleSize": {
+                      "type": "integer",
+                      "example": 8
+                    }
+                  }
+                }
+              },
+              "totalDefects": {
+                "type": "integer",
+                "example": 0
+              },
+              "totalItems": {
+                "type": "integer",
+                "example": 6
+              }
+            }
           }
         }
       }
-    },
-    "status": {
-      "type": "string"
-    },
-    "vendor": {
-      "properties": {
-        "contact": {
-          "properties": {
-            "contactId": {
-              "type": "string"
-            },
-            "email": {
-              "type": "string"
-            },
-            "mobileNumber": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
-        "orgAddress": {
-          "type": "string"
-        },
-        "orgId": {
-          "type": "string"
-        },
-        "orgName": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "type": {
-      "properties": {
-        "code": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "updatedDate": {
-      "type": "string",
-      "example": "2018-01-20T07:43:00Z"
-    }
-  }
     },
     "SystemError": {
       "properties": {
